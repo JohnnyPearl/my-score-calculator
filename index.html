@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Máy tính điểm TB</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 20px; 
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        h2 { 
+            margin-bottom: 10px; 
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        table {
+            margin: auto;
+            border-collapse: collapse;
+            width: 90%;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid white;
+        }
+
+        input { 
+            width: 35px; 
+            padding: 3px;
+            text-align: center;
+            border-radius: 3px;
+            border: none;
+            font-size: 14px;
+        }
+
+        button { 
+            margin-top: 10px; 
+            padding: 12px 20px; 
+            font-size: 18px; 
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff4d79;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff1a66;
+        }
+
+        .result {
+            font-size: 22px; 
+            margin-top: 15px; 
+            font-weight: bold; 
+            color: yellow;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <h2>📘 Tính điểm trung bình môn học cho bé yêu ❤</h2>
+
+    <div class="container">
+        <p><strong>Nhập thông tin từng bài thi:</strong></p>
+
+        <table>
+            <tr>
+                <th>Bài thi</th>
+                <th>Số câu đúng</th>
+                <th>Tổng số câu</th>
+                <th>Phần trăm (%)</th>
+            </tr>
+            <tr>
+                <td>Pretest</td>
+                <td><input type="number" id="pretest_score" step="0.1"></td>
+                <td></td>
+                <td><input type="number" id="pretest_weight" value="10"></td>
+            </tr>
+            <tr>
+                <td>Midterm</td>
+                <td><input type="number" id="mid_correct"></td>
+                <td>/  <input type="number" id="mid_total"></td>
+                <td><input type="number" id="mid_weight" value="20"></td>
+            </tr>
+            <tr>
+                <td>Final</td>
+                <td><input type="number" id="final_correct"></td>
+                <td>/   <input type="number" id="final_total"></td>
+                <td><input type="number" id="final_weight" value="70"></td>
+            </tr>
+        </table>
+
+        <button onclick="calculateFinalGrade()">📊 Tính điểm</button>
+        <p class="result" id="result"></p>
+    </div>
+
+    <script>
+        function calculateScore(correct, total) {
+            if (total === 0) return 0;  
+            let n = correct / total;
+            if (n < 0.5) return (8 * correct) / total;
+            if (n === 0.5) return 4;
+            if (n > 0.5 && n < 0.6) return 4 + (10 * (correct - 0.5 * total)) / total;
+            if (n === 0.6) return 5;
+            return 5 + (12.5 * (correct - 0.6 * total)) / total;
+        }
+        function convertToLetterGrade(score) {
+            if (score >= 9.6) return { letter: "A+", gpa: 4.0 };
+            if (score >= 8.5) return { letter: "A", gpa: 4.0 };
+            if (score >= 8.0) return { letter: "B+", gpa: 3.5 };
+            if (score >= 7.0) return { letter: "B", gpa: 3.0 };
+            if (score >= 6.5) return { letter: "C+", gpa: 2.5 };
+            if (score >= 5.5) return { letter: "C", gpa: 2.0 };
+            if (score >= 5.0) return { letter: "D+", gpa: 1.5 };
+            if (score >= 4.0) return { letter: "D", gpa: 1.0 };
+            return { letter: "F", gpa: 0.0 };
+        }
+
+        function getMotivationMessage(gpa) {
+            if (gpa == 4.0) {
+                return "🌟 Anh yêu bé yêu! Tiếp tục giữ vững phong độ nha em! 💪";
+            } else if (gpa == 3.5) {
+                return "🎯 Anh yêu bé yêu! Bé yêu của anh làm tốt rồi! 🎉";
+            } else if (gpa == 3.0) {
+                return "📖 Anh yêu bé yêu! Mai mốt cố gắng thêm một chút nữa nha! 🚀";
+            } else if (gpa >= 2.0) {
+                return "😊 Anh yêu bé yêu! Bé yêu không được buồn, cố gắng cho lần thi tiếp theo thôi! 🔥";
+            } else {
+                return "😡 Quá hư! Về đưa cái mông cho tui 🍑";
+            }
+        }
+
+        function calculateFinalGrade() {
+            let pretest_score = parseFloat(document.getElementById("pretest_score").value) || 0;
+            let pretest_weight = parseFloat(document.getElementById("pretest_weight").value) / 100;
+
+            let mid_correct = parseInt(document.getElementById("mid_correct").value) || 0;
+            let mid_total = parseInt(document.getElementById("mid_total").value) || 1;
+            let mid_weight = parseFloat(document.getElementById("mid_weight").value) / 100;
+
+            let final_correct = parseInt(document.getElementById("final_correct").value) || 0;
+            let final_total = parseInt(document.getElementById("final_total").value) || 1;
+            let final_weight = parseFloat(document.getElementById("final_weight").value) / 100;
+
+            let mid_score = calculateScore(mid_correct, mid_total);
+            let final_score = calculateScore(final_correct, final_total);
+
+            let final_grade = (pretest_weight * pretest_score) + (mid_weight * mid_score) + (final_weight * final_score);
+
+            let { letter, gpa } = convertToLetterGrade(final_grade);
+            let message = getMotivationMessage(gpa);
+            
+            document.getElementById("result").innerHTML = `📌 Điểm trung bình: ${final_grade.toFixed(2)} <br> 🎓 GPA: ${gpa.toFixed(2)} (${letter}) <br> ${message}`;
+        }
+    </script>
+</body>
+</html>
